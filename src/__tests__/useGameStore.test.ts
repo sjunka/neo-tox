@@ -1,7 +1,11 @@
 import { useGameStore, HUMAN_PLAYER, AI_PLAYER } from '../store/useGameStore';
+import { playWinSound } from '../utils/sound';
 import type { Player } from '../engine/GameEngine';
 
+jest.mock('../utils/sound', () => ({ playWinSound: jest.fn() }));
+
 const freshState = () => {
+  jest.clearAllMocks();
   useGameStore.setState({
     board: Array<Player>(9).fill(null),
     gridSize: 3,
@@ -119,6 +123,33 @@ describe('useGameStore', () => {
     // Exactly one human mark and one AI mark on the board.
     expect(state.board.filter((cell) => cell === HUMAN_PLAYER)).toHaveLength(1);
     expect(state.board.filter((cell) => cell === AI_PLAYER)).toHaveLength(1);
+  });
+
+  it('plays the victory chime on a human win only', async () => {
+    useGameStore.setState({
+      board: [
+        'X', 'X', null,
+        'O', 'O', null,
+        null, null, null,
+      ],
+    });
+
+    await useGameStore.getState().makeMove(2);
+    expect(playWinSound).toHaveBeenCalledTimes(1);
+  });
+
+  it('stays silent on an AI win', async () => {
+    useGameStore.setState({
+      board: [
+        'O', 'O', null,
+        'X', 'X', 'O',
+        'X', null, null,
+      ],
+    });
+
+    await useGameStore.getState().makeMove(7);
+    expect(useGameStore.getState().winner).toBe(AI_PLAYER);
+    expect(playWinSound).not.toHaveBeenCalled();
   });
 
   it('resetStats clears the scoreboard', () => {

@@ -11,6 +11,7 @@ import {
   type Player,
 } from '../engine/GameEngine';
 import { triggerHaptic } from '../utils/haptics';
+import { playWinSound } from '../utils/sound';
 import { TOKENS } from '../theme/tokens';
 
 export const HUMAN_PLAYER: Mark = 'X';
@@ -99,6 +100,7 @@ export const useGameStore = create<GameState>()(
         const humanWin = checkWin(updatedBoard, gridSize);
         if (humanWin) {
           triggerHaptic.success();
+          if (humanWin.winner === HUMAN_PLAYER) playWinSound();
           set((state) => ({
             board: updatedBoard,
             winner: humanWin.winner,

@@ -97,6 +97,11 @@ export const TOKENS = {
     msPerSecond: 1000,
   },
 
+  sound: {
+    /** Playback volume for the victory chime (0–1). */
+    winVolume: 0.8,
+  },
+
   game: {
     defaultGridSize: 3,
     gridSizeOptions: [3, 4, 5],
