@@ -8,6 +8,22 @@ including an unbeatable one — on a **3×3, 4×4, or 5×5** board.
 
 <p align="center"><em>GPU shader background · self-drawing neon markers · laser winning strike · haptic feedback · persistent stats</em></p>
 
+## Demo
+
+<p align="center">
+  <img src="docs/media/demo.gif" width="300" alt="18-second gameplay demo: a full 3×3 game ending in a laser-strike win, then switching to a 4×4 board where the AI answers" />
+</p>
+
+<p align="center"><em>A full game loop in 18 seconds: staggered board entrance, self-drawing markers, the AI "computing" pulse, the winning laser strike with the YOU WIN banner, then a live switch to a 4×4 grid.</em></p>
+
+> 🎬 Prefer video? [Watch the MP4 (443 KB)](docs/media/demo.mp4)
+
+## Screenshots
+
+| Home — shader glow & stats | Victory — laser strike | N×N — 4×4 vs IMPOSSIBLE |
+|:---:|:---:|:---:|
+| ![Clean 3×3 board over the breathing GPU shader background, with the persistent wins/draws/losses scoreboard](docs/media/home.png) | ![Diagonal win: neon X markers crossed by the white-hot laser strike, YOU WIN banner and Play Again button](docs/media/win-state.png) | ![4×4 board mid-game with the IMPOSSIBLE difficulty selected, showing the engine scales beyond 3×3](docs/media/board-4x4.png) |
+
 ---
 
 ## Features
@@ -95,6 +111,19 @@ npx expo run:ios
 npm test           # 25 unit tests (engine + store)
 npm run typecheck  # strict TypeScript
 ```
+
+## Requirements compliance
+
+| Requirement | Where it's satisfied |
+|---|---|
+| Single-player tic-tac-toe vs. a computer player | Minimax AI with three difficulties — `src/engine/GameEngine.ts` |
+| AI prompt history included | [PROMPTS.md](./PROMPTS.md) — full two-phase history, including deviations and debugging |
+| **No magic numbers** | Every design value lives in [`src/theme/tokens.ts`](./src/theme/tokens.ts); remaining values are named module constants (e.g. `EASY_MISTAKE_PROBABILITY`, `WIN_SCORE`) |
+| **Animations included** | Shader background, marker draw-in, pop-in springs, winning strike, layout springs, thinking pulse — see [Demo](#demo) |
+| **Animations run smoothly** | GPU-first: SkSL shader + Skia canvases; Reanimated worklets run on the UI thread; AI search is depth-limited to stay off the frame budget |
+| **Code scalable to N×N** | Engine, board, geometry, and strike all derive from one `gridSize`; 3×3 / 4×4 / 5×5 in the UI; `getWinningLines(n)` works for any `n` |
+| **Tested before sending** | 25 unit tests + strict tsc + production bundle + full native build exercised on the iOS Simulator (screenshots above are from those runs) |
+| Runs on a Mac (mini) | [Running on a Mac](#running-on-a-mac-mini) — three prerequisites and one command |
 
 ## AI prompt history
 
