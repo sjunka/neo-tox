@@ -112,6 +112,17 @@ npm test           # 25 unit tests (engine + store)
 npm run typecheck  # strict TypeScript
 ```
 
+## Code health
+
+<img src="docs/media/react-doctor-score.png" width="420" alt="React Doctor score: 100 out of 100, Great" />
+
+The full codebase scores **100/100** on [React Doctor](https://react.doctor)
+(security, performance, correctness, and architecture scan). Reproduce with:
+
+```bash
+npx react-doctor@latest .
+```
+
 ## Requirements compliance
 
 | Requirement | Where it's satisfied |
