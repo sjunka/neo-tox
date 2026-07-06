@@ -17,7 +17,10 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["android.permission.MODIFY_AUDIO_SETTINGS"],
+      "blockedPermissions": ["android.permission.RECORD_AUDIO"],
+      "package": "com.anonymous.neotox"
     },
     "web": {
       "favicon": "./assets/favicon.png"
