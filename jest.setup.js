@@ -12,6 +12,7 @@ jest.mock('expo-audio', () => ({
     seekTo: jest.fn(() => Promise.resolve()),
     volume: 1,
   })),
+  setAudioModeAsync: jest.fn(() => Promise.resolve()),
 }));
 
 // Haptics touch native hardware — stub them out for unit tests.

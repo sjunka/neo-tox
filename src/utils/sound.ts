@@ -1,5 +1,9 @@
-import { createAudioPlayer } from 'expo-audio';
+import { createAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import { TOKENS } from '../theme/tokens';
+
+// Game SFX must play with the iPhone silent switch on — the platform default
+// mutes them, which reads as "sound is broken" to players.
+setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
 
 /**
  * Victory chime — a short C5–E5–G5 arpeggio bundled with the app.
