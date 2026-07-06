@@ -6,6 +6,10 @@ A premium, cyber-aesthetic **N×N tic-tac-toe** game for iOS and Android, built 
 You play **X** against a minimax computer opponent with three difficulty levels —
 including an unbeatable one — on a **3×3, 4×4, or 5×5** board.
 
+> **Reviewing this submission?** Start with the one-page
+> [**CTO / Engineering Manager brief**](CTO-BRIEF.md) — targets, evidence, and
+> the decisions behind the code, on a single page.
+
 <p align="center"><em>GPU shader background · self-drawing neon markers · laser winning strike · haptic feedback · persistent stats</em></p>
 
 ## Demo
@@ -44,6 +48,8 @@ including an unbeatable one — on a **3×3, 4×4, or 5×5** board.
   - Staggered cell entrance, layout springs on grid-size change, pulsing
     "AI computing" state
 - **Haptics** mapped to game events (move, win, loss, invalid tap)
+- **Victory chime** — a bundled ~10 KB C5–E5–G5 arpeggio on human wins, wired
+  so audio can never crash or block gameplay (same contract as haptics)
 - **Persistent stats** (wins / draws / losses) and settings via Zustand + AsyncStorage
 - **Zero magic numbers** — every color, distance, duration, ratio, physics
   constant, and shader tuning value lives in `src/theme/tokens.ts` or is a
