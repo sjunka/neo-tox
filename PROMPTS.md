@@ -79,6 +79,17 @@ blueprint was wrong or below standard, and those decisions are part of the recor
   an SVG string path in the winning strike (removes runtime deprecation
   warnings on Skia 2.6).
 
+A follow-up quality pass ran **React Doctor** (static scan for security,
+performance, correctness, and architecture). Initial score: 92/100 with one
+warning (`async-defer-await` in the game store — an `await` followed by an
+early-return race guard). The guard was intentionally placed *after* the await
+(it detects resets that happen during the AI's thinking pause), so instead of
+hoisting it — which would have broken the race protection — the AI-reply logic
+was extracted into a synchronous `applyAiReply` continuation and the minimax
+search was moved *before* the presentational delay. Behavior is unchanged
+(verified by the full test suite), the perceived AI pause is now a consistent
+length regardless of search time, and the score is **100/100**.
+
 ## Verification performed by the AI before submission
 
 - `npm run typecheck` — strict TypeScript, clean

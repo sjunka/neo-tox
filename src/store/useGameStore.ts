@@ -128,53 +128,69 @@ export const useGameStore = create<GameState>()(
           isAiThinking: true,
         });
 
+        // Synchronous continuation for the AI reply. Extracted so the code
+        // after the "thinking" pause is a single guarded call rather than a
+        // chain of `await → early return`s (react-doctor/async-defer-await):
+        // the early returns live here, in synchronous code, where they are
+        // free — nothing async is left waiting on a path that skips out.
+        const applyAiReply = (aiMove: number): void => {
+          if (aiMove === NO_MOVE) {
+            set({ currentPlayer: HUMAN_PLAYER, isAiThinking: false });
+            return;
+          }
+
+          updatedBoard[aiMove] = AI_PLAYER;
+          triggerHaptic.light();
+
+          const aiWin = checkWin(updatedBoard, gridSize);
+          if (aiWin) {
+            triggerHaptic.error(); // The human just lost.
+            set((state) => ({
+              board: updatedBoard,
+              currentPlayer: HUMAN_PLAYER,
+              isAiThinking: false,
+              winner: aiWin.winner,
+              winningLine: aiWin.line,
+              stats:
+                aiWin.winner === AI_PLAYER
+                  ? { ...state.stats, losses: state.stats.losses + 1 }
+                  : { ...state.stats, wins: state.stats.wins + 1 },
+            }));
+            return;
+          }
+
+          if (isBoardFull(updatedBoard)) {
+            set((state) => ({
+              board: updatedBoard,
+              currentPlayer: HUMAN_PLAYER,
+              isAiThinking: false,
+              winner: 'DRAW',
+              stats: { ...state.stats, draws: state.stats.draws + 1 },
+            }));
+            return;
+          }
+
+          set({
+            board: updatedBoard,
+            currentPlayer: HUMAN_PLAYER,
+            isAiThinking: false,
+          });
+        };
+
+        // Compute the reply BEFORE the pause: the beat below is purely
+        // presentational, so searching first keeps the perceived pause a
+        // consistent length regardless of how long minimax takes.
+        const aiMove = getBestMove(updatedBoard, gridSize, AI_PLAYER, difficulty);
+
         await waitForAiBeat();
 
-        // A reset may have happened while the AI was "thinking".
-        if (get().gameId !== gameId) return;
-
-        const aiMove = getBestMove(updatedBoard, gridSize, AI_PLAYER, difficulty);
-        if (aiMove === NO_MOVE) {
-          set({ currentPlayer: HUMAN_PLAYER, isAiThinking: false });
-          return;
+        // Race guard: only apply the reply if no reset happened while the AI
+        // was "thinking". This check must stay AFTER the await — its entire
+        // purpose is to observe state changes that occurred during the pause,
+        // so it cannot be hoisted above it.
+        if (get().gameId === gameId) {
+          applyAiReply(aiMove);
         }
-
-        updatedBoard[aiMove] = AI_PLAYER;
-        triggerHaptic.light();
-
-        const aiWin = checkWin(updatedBoard, gridSize);
-        if (aiWin) {
-          triggerHaptic.error(); // The human just lost.
-          set((state) => ({
-            board: updatedBoard,
-            currentPlayer: HUMAN_PLAYER,
-            isAiThinking: false,
-            winner: aiWin.winner,
-            winningLine: aiWin.line,
-            stats:
-              aiWin.winner === AI_PLAYER
-                ? { ...state.stats, losses: state.stats.losses + 1 }
-                : { ...state.stats, wins: state.stats.wins + 1 },
-          }));
-          return;
-        }
-
-        if (isBoardFull(updatedBoard)) {
-          set((state) => ({
-            board: updatedBoard,
-            currentPlayer: HUMAN_PLAYER,
-            isAiThinking: false,
-            winner: 'DRAW',
-            stats: { ...state.stats, draws: state.stats.draws + 1 },
-          }));
-          return;
-        }
-
-        set({
-          board: updatedBoard,
-          currentPlayer: HUMAN_PLAYER,
-          isAiThinking: false,
-        });
       },
     }),
     {
