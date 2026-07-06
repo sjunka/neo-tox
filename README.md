@@ -1,5 +1,7 @@
 # Neo Tox
 
+![Neo Tox — premium neon tic-tac-toe with an unbeatable minimax AI, built to 5-star store quality, for iOS and Android](docs/media/poster.png)
+
 A premium, cyber-aesthetic **N×N tic-tac-toe** game for iOS and Android, built with
 **Expo SDK 57**, **React Native 0.86**, **React Native Skia**, **Reanimated 4**, and **Zustand**.
 
@@ -24,9 +26,9 @@ including an unbeatable one — on a **3×3, 4×4, or 5×5** board.
 
 ## Screenshots
 
-| Home — shader glow & stats | Victory — laser strike | N×N — 4×4 vs IMPOSSIBLE |
-|:---:|:---:|:---:|
-| ![Clean 3×3 board over the breathing GPU shader background, with the persistent wins/draws/losses scoreboard](docs/media/home.png) | ![Diagonal win: neon X markers crossed by the white-hot laser strike, YOU WIN banner and Play Again button](docs/media/win-state.png) | ![4×4 board mid-game with the IMPOSSIBLE difficulty selected, showing the engine scales beyond 3×3](docs/media/board-4x4.png) |
+| Home — shader glow & stats | Victory — laser strike | N×N — 4×4 vs IMPOSSIBLE | Android — same codebase |
+|:---:|:---:|:---:|:---:|
+| ![Clean 3×3 board over the breathing GPU shader background, with the persistent wins/draws/losses scoreboard](docs/media/home.png) | ![Diagonal win: neon X markers crossed by the white-hot laser strike, YOU WIN banner and Play Again button](docs/media/win-state.png) | ![4×4 board mid-game with the IMPOSSIBLE difficulty selected, showing the engine scales beyond 3×3](docs/media/board-4x4.png) | ![Mid-game on a Pixel emulator: X center, AI's O in the corner — no platform-specific code](docs/media/android.png) |
 
 ---
 
@@ -110,6 +112,15 @@ npx expo run:ios
 > The project uses native modules (Skia, Reanimated), so it will not run in
 > Expo Go — `expo run:ios` builds a development client automatically.
 > To target a specific simulator: `npx expo run:ios --device "iPhone 17 Pro"`.
+
+### Android
+
+Same codebase, no platform-specific code. With an Android emulator or a
+device connected (needs JDK 17 + the Android SDK, e.g. via Android Studio):
+
+```bash
+npx expo run:android
+```
 
 ### Tests & checks
 
