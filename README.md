@@ -99,7 +99,7 @@ Key decisions:
 ### Run it
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/sjunka/neo-tox.git
 cd neo-tox
 npm install
 

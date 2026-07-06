@@ -15,10 +15,12 @@ winPlayer.volume = TOKENS.sound.winVolume;
  * is swallowed — sound must never crash or block gameplay.
  */
 export const playWinSound = (): void => {
-  try {
-    winPlayer.seekTo(0);
-    winPlayer.play();
-  } catch {
-    // Deliberately ignored — see contract above.
-  }
+  // Replays must wait for the rewind: after the chime finishes once, the
+  // player sits at the end, and play() before the async seek lands is silent.
+  winPlayer
+    .seekTo(0)
+    .then(() => winPlayer.play())
+    .catch(() => {
+      // Deliberately ignored — see contract above.
+    });
 };
